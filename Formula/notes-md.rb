@@ -46,9 +46,8 @@ class NotesMd < Formula
 
   def caveats
     <<~EOS
-      Start with: notes export
+      Start with: notes
       Settings: notes config
-      If reading NoteStore.sqlite fails, give the terminal Full Disk Access.
     EOS
   end
 

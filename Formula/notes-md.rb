@@ -26,8 +26,10 @@ class NotesMd < Formula
     system "bundle", "cache", "--no-install"
   end
 
+  # As homebrew-core does for Ruby tools (ronn-ng, licensed): the gems in
+  # Gemfile.lock, then notes-md itself as a gem, all in libexec.
   def install
-    ENV["GEM_HOME"] = libexec/"gems"
+    ENV["GEM_HOME"] = libexec
     # The gem versions in Gemfile.lock, nothing else.
     ENV["BUNDLE_FROZEN"] = "true"
 
@@ -35,13 +37,11 @@ class NotesMd < Formula
     system "bundle", "config", "set", "build.nokogiri", "--use-system-libraries"
     system "bundle", "config", "set", "build.sqlite3", "--enable-system-libraries"
     system "bundle", "install", "--local"
+    system "gem", "build", "#{name}.gemspec"
+    system "gem", "install", "--ignore-dependencies", "#{name}-#{version}.gem"
 
-    libexec.install Dir["*"] - ["vendor"]
-    # Homebrew's ruby, with the gems installed here, also when another ruby
-    # comes first in PATH.
-    (bin/"notes").write_env_script libexec/"notes",
-      GEM_HOME: libexec/"gems",
-      PATH:     "#{Formula["ruby"].opt_bin}:$PATH"
+    bin.install libexec/"bin/notes"
+    bin.env_script_all_files(libexec/"bin", GEM_HOME: ENV["GEM_HOME"])
   end
 
   def caveats

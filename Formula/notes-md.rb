@@ -46,20 +46,9 @@ class NotesMd < Formula
 
   def caveats
     <<~EOS
-      notes export creates ~/notes as a git repo the first time.
-
-      macOS asks whether the terminal may control Notes; answer OK.
-      If reading NoteStore.sqlite fails, give the terminal Full Disk Access
-      in System Settings → Privacy & Security.
-
-      Settings, as environment variables (e.g. in ~/.zshrc):
-        NOTES_ROOT                    the archive (default ~/notes)
-        NOTES_BASELINE                the baseline folder (default ~/notes.baseline)
-        NOTES_LANG=nb                 Norwegian section headings
-        NOTES_BOLD_LINE_AS_HEADING=1  a line that is only bold becomes a ## heading
-        NOTES_LIMIT_FOLDER            sync only this folder in Notes
-        TZ                            time zone for dates (e.g. Europe/Oslo)
-      All of them: the README, https://github.com/finnove/notes-md
+      Start with: notes export
+      Settings: notes config
+      If reading NoteStore.sqlite fails, give the terminal Full Disk Access.
     EOS
   end
 

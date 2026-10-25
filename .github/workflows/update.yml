@@ -1,0 +1,33 @@
+# Points Formula/notes-md.rb at the newest tag v* in finnove/notes-md, every
+# hour and when run by hand, so brew upgrade gets the new version.
+name: Update formula
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      # Pinned to the commit of v7.0.1: a tag can be moved, a commit cannot.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Point the formula at the newest notes-md tag
+        run: |
+          tag=$(git ls-remote --tags --refs --sort=-v:refname https://github.com/finnove/notes-md.git 'v*' | head -1 | sed 's|.*refs/tags/||')
+          [ -n "$tag" ] || exit 0
+          # Only vX.Y.Z: the name goes into sed and the commit message.
+          [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Not a version tag: $tag"; exit 1; }
+          url="https://github.com/finnove/notes-md/archive/refs/tags/$tag.tar.gz"
+          grep -qF "url \"$url\"" Formula/notes-md.rb && exit 0
+          sha256=$(curl -sSfL "$url" | sha256sum | cut -d' ' -f1)
+          sed -i -e "s|^  url \".*\"|  url \"$url\"|" -e "s|^  sha256 \".*\"|  sha256 \"$sha256\"|" Formula/notes-md.rb
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git commit -am "notes-md $tag"
+          git push

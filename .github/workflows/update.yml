@@ -24,8 +24,8 @@ jobs:
           # Only vX.Y.Z: the name goes into sed and the commit message.
           [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Not a version tag: $tag"; exit 1; }
           url="https://github.com/finnove/notes-md/archive/refs/tags/$tag.tar.gz"
-          grep -qF "url \"$url\"" Formula/notes-md.rb && exit 0
           sha256=$(curl -sSfL "$url" | sha256sum | cut -d' ' -f1)
+          grep -qF "sha256 \"$sha256\"" Formula/notes-md.rb && exit 0
           sed -i -e "s|^  url \".*\"|  url \"$url\"|" -e "s|^  sha256 \".*\"|  sha256 \"$sha256\"|" Formula/notes-md.rb
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"

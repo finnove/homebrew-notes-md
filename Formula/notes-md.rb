@@ -12,15 +12,31 @@ class NotesMd < Formula
   depends_on "pandoc"
   depends_on "ruby"
 
+  uses_from_macos "libxml2"
+  uses_from_macos "libxslt"
+  uses_from_macos "sqlite"
+
+  deny_network_access!
+
+  # The gems in Gemfile.lock, downloaded and checked against their checksums
+  # before install, which runs without network.
+  def fetch
+    ENV["BUNDLE_PATH"] = ".bundle"
+
+    system "bundle", "cache", "--no-install"
+  end
+
   def install
-    libexec.install Dir["*"]
     ENV["GEM_HOME"] = libexec/"gems"
-    # The gem versions and checksums in Gemfile.lock, nothing else: a gem
-    # whose checksum does not match stops the install.
+    # The gem versions in Gemfile.lock, nothing else.
     ENV["BUNDLE_FROZEN"] = "true"
-    cd libexec do
-      system "bundle", "install"
-    end
+
+    # Built from source against the libraries in macOS.
+    system "bundle", "config", "set", "build.nokogiri", "--use-system-libraries"
+    system "bundle", "config", "set", "build.sqlite3", "--enable-system-libraries"
+    system "bundle", "install", "--local"
+
+    libexec.install Dir["*"] - ["vendor"]
     # Homebrew's ruby, with the gems installed here, also when another ruby
     # comes first in PATH.
     (bin/"notes").write_env_script libexec/"notes",

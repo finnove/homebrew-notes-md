@@ -3,8 +3,8 @@
 class NotesMd < Formula
   desc "Export Apple Notes to markdown files with YAML frontmatter"
   homepage "https://github.com/finnove/notes-md"
-  url "https://github.com/finnove/notes-md/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "d8b5c04f7f6c41017fb7e2be3c002ab3c8b64483b67136292afcffb9fa010297"
+  url "https://github.com/finnove/notes-md/archive/refs/tags/v0.1.1.tar.gz"
+  sha256 "85ce490def5f6dedc73c475f6af22f9c2b93c90d54e06bfc41f7543c00003f4f"
   license "GPL-3.0-only"
   head "https://github.com/finnove/notes-md.git", branch: "main"
 
